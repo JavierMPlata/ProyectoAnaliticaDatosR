@@ -5,18 +5,12 @@
 # =============================================================================
 
 # ── Rutas base ────────────────────────────────────────────────────────────────
-# Detecta la ubicación del script y sube dos niveles hasta la raíz del proyecto
-BASE_DIR    <- normalizePath(file.path(dirname(rstudioapi::getSourceEditorContext()$path), ".."),
-                             mustWork = FALSE)
-
-# Fallback si se ejecuta desde consola (sin RStudio)
-if (!dir.exists(BASE_DIR)) {
-  BASE_DIR <- normalizePath("..", mustWork = FALSE)
-}
-
-FILES_DIR   <- file.path(BASE_DIR, "src", "Config", "Files")
+# La ejecución se hace desde la raíz del proyecto con `main.R`.
+# Se evita depender de rstudioapi para que también funcione desde terminal.
+BASE_DIR    <- normalizePath(getwd(), mustWork = FALSE)
+FILES_DIR   <- file.path(BASE_DIR, "Files")
 CLEANED_DIR <- file.path(FILES_DIR, "Cleaned")
-CHARTS_DIR  <- file.path(BASE_DIR, "R", "Charts")
+CHARTS_DIR  <- file.path(FILES_DIR, "Charts")
 
 # ── Archivos de entrada ────────────────────────────────────────────────────────
 ACTOR_VIAL_FILE <- "Actor_vial.xlsx"
@@ -31,7 +25,7 @@ VEHICULOS_OUTPUT  <- "Vehiculos_limpio_R.xlsx"
 
 # ── Columnas a eliminar por dataset ──────────────────────────────────────────
 COLS_DROP_ACTOR     <- c("Muerte_Posterior", "Fecha_CambioGravedad", "Tipo_SITP")
-COLS_DROP_SINIESTROS <- c("Longitud", "Latitud")
+COLS_DROP_SINIESTROS <- character(0)  # Conservar coordenadas en Siniestros
 COLS_DROP_VEHICULOS <- c("Tipo_SITP", "Modalidad")
 
 # ── Columnas Con_* explícitas — Siniestros (21 cols) ─────────────────────────

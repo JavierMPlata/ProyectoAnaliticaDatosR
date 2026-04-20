@@ -22,7 +22,7 @@ library(tidyr)     # Pivoteo y reshape
 library(scales)    # Formato de ejes (comma, percent)
 library(readxl)    # Lectura de archivos Excel limpios
 
-source("R/config.R")  # Variables centralizadas
+source("config.R")  # Variables centralizadas
 
 # =============================================================================
 # PALETAS DE COLOR — sin amarillo en texto, alto contraste
@@ -74,6 +74,9 @@ tema_base <- function(base = 16) {
     axis.title.x      = element_text(margin = margin(t = 10)),
     axis.title.y      = element_text(margin = margin(r = 10)),
     axis.text         = element_text(size = base, color = "#2c2c4a"),
+    axis.line         = element_line(color = "#2c2c4a", linewidth = 0.7),
+    axis.ticks        = element_line(color = "#2c2c4a", linewidth = 0.6),
+    axis.ticks.length = unit(0.22, "cm"),
     # Grilla
     panel.grid.major  = element_line(color = "#e8e8f0", linewidth = 0.5),
     panel.grid.minor  = element_blank(),
@@ -112,9 +115,13 @@ save_plot <- function(p, name, w = 13, h = 8) {
   ensure_charts_dir()
   ggsave(file.path(CHARTS_DIR, "PNG", paste0(name, ".png")),
          plot = p, width = w, height = h, dpi = 300, bg = "white")
-  ggsave(file.path(CHARTS_DIR, "SVG", paste0(name, ".svg")),
-         plot = p, width = w, height = h, bg = "white")
-  message(sprintf("  Gráfico guardado: %s (.png + .svg)", name))
+  if (requireNamespace("svglite", quietly = TRUE)) {
+    ggsave(file.path(CHARTS_DIR, "SVG", paste0(name, ".svg")),
+           plot = p, width = w, height = h, bg = "white")
+    message(sprintf("  Gráfico guardado: %s (.png + .svg)", name))
+  } else {
+    message(sprintf("  Gráfico guardado: %s (.png) [SVG omitido: falta svglite]", name))
+  }
 }
 
 # =============================================================================
@@ -712,7 +719,7 @@ chart_violin_hora_gravedad <- function(df) {
 # FUNCIÓN PRINCIPAL — generar todos los gráficos
 # =============================================================================
 
-#' Genera los 14 gráficos del proyecto y los guarda en R/Charts/
+#' Genera los 14 gráficos del proyecto y los guarda en Files/Charts/
 #'
 #' @return list con los objetos ggplot (invisible)
 generate_all_charts <- function() {

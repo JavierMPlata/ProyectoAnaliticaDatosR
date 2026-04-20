@@ -11,7 +11,7 @@ library(readxl)    # Lectura de archivos Excel
 library(dplyr)     # Manipulación de datos (pipeline con |>)
 library(writexl)   # Escritura de archivos Excel
 
-source("R/config.R")  # Cargar variables de configuración
+source("config.R")  # Cargar variables de configuración
 
 # =============================================================================
 # UTILIDADES AUXILIARES
@@ -196,7 +196,7 @@ transform_actor_vial <- function(df) {
 #' 2. Tipo_Objeto_Fijo → eliminar filas con NA.
 #' 3. Gravedad_indicador_30d → copiar de Tradicional donde sea NA.
 #' 4. Columnas Con_* (lista explícita) → "NO".
-#' 5. Eliminar Longitud, Latitud.
+#' 5. Conservar Longitud y Latitud.
 #'
 #' @param df data.frame crudo de Siniestros
 #' @return   data.frame limpio
@@ -226,10 +226,8 @@ transform_siniestros <- function(df) {
   # 4. Columnas Con_*
   df <- fill_con_columns(df, CON_COLS_SINIESTROS)
 
-  # 5. Eliminar Longitud y Latitud
-  cols_drop <- intersect(COLS_DROP_SINIESTROS, names(df))
-  df <- df |> select(-any_of(cols_drop))
-  message(sprintf("  Columnas eliminadas: %s", paste(cols_drop, collapse = ", ")))
+  # 5. Conservar Longitud y Latitud (sin eliminación de coordenadas)
+  message("  Coordenadas Longitud/Latitud conservadas")
 
   message(sprintf(
     "  Siniestros transformado: %d → %d filas, %d columnas, %d nulos restantes",

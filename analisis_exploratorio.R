@@ -18,7 +18,7 @@ library(dplyr)     # Manipulación de datos
 library(tidyr)     # Pivoteo y reshape
 library(corrplot)  # Visualización de correlaciones
 
-source("R/config.R")  # Variables centralizadas
+source("config.R")  # Variables centralizadas
 
 # =============================================================================
 # LECTURA DE DATOS LIMPIOS

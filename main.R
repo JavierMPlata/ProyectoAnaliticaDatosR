@@ -9,10 +9,10 @@
 #
 # Uso desde RStudio:
 #   setwd("<ruta_al_proyecto>")
-#   source("R/main.R")
+#   source("main.R")
 #
 # Uso desde terminal R:
-#   Rscript R/main.R
+#   Rscript main.R
 # =============================================================================
 
 # ── Verificar paquetes e instalar si faltan ────────────────────────────────────
@@ -23,7 +23,11 @@ paquetes_necesarios <- c(
   "tidyr",     # Pivoteo y reshape
   "ggplot2",   # Visualizaciones
   "scales",    # Formato de ejes
-  "corrplot"   # Gráfico de correlaciones
+  "corrplot",  # Gráfico de correlaciones
+  "shiny",     # Dashboard interactivo
+  "plotly",    # Gráficos interactivos
+  "leaflet",   # Mapa base
+  "leaflet.extras" # Heatmap geográfico
 )
 
 paquetes_faltantes <- paquetes_necesarios[
@@ -36,10 +40,10 @@ if (length(paquetes_faltantes) > 0) {
 }
 
 # ── Cargar módulos del proyecto ───────────────────────────────────────────────
-source("R/config.R")
-source("R/etl_limpieza.R")
-source("R/analisis_exploratorio.R")
-source("R/visualizaciones.R")
+source("config.R")
+source("etl_limpieza.R")
+source("analisis_exploratorio.R")
+source("visualizaciones.R")
 
 # =============================================================================
 # PIPELINE COMPLETO
