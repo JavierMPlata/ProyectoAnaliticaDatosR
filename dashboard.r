@@ -55,7 +55,7 @@ load_dashboard_data <- function() {
              lon  = suppressWarnings(as.numeric(gsub(",",".", as.character(lon)))),
              Anio = as.character(Anio)) |>
       filter(!is.na(lat), !is.na(lon),
-             lat >= 3.5, lat <= 5.5, lon >= -75.0, lon <= -73.0)
+             lat >= 4.44, lat <= 4.84, lon >= -74.26, lon <= -73.98)
     message(sprintf("[dashboard] Coordenadas válidas: %d puntos", nrow(coords_df)))
   }
   message(sprintf("[dashboard] Sin: %d | Act: %d | Veh: %d",
@@ -269,7 +269,7 @@ run_dashboard <- function(launch_browser = TRUE) {
                    del mapa. Los c\u00edrculos agrupan accidentes cercanos (el n\u00famero indica
                    cu\u00e1ntos hay). Haz clic en un grupo para acercar y ver los puntos
                    individuales. El mapa de calor muestra densidad: rojo = zona cr\u00edtica.",
-                  style = "font-style:italic; color:#555; font-size:11px;
+                  style = "font-style:italic; color:#555; font-size:14px;
                            margin-bottom:8px; line-height:1.5;"),
                 leafletOutput("mapa_pro", height = "560px"))
           ),
@@ -1034,10 +1034,21 @@ run_dashboard <- function(launch_browser = TRUE) {
         na.color = "#95a5a6"
       )
 
-      mapa <- leaflet(d) |>
+      usa_localidad <- !is.null(input$localidad) && input$localidad != "Todas"
+
+      mapa_base <- leaflet(d) |>
         addProviderTiles(providers$CartoDB.Positron,   group = "Claro") |>
-        addProviderTiles(providers$CartoDB.DarkMatter, group = "Oscuro") |>
-        setView(lng = -74.0817, lat = 4.7110, zoom = 11)
+        addProviderTiles(providers$CartoDB.DarkMatter, group = "Oscuro")
+
+      mapa <- if (usa_localidad && nrow(d) > 0) {
+        pad <- 0.015
+        mapa_base |> fitBounds(
+          lng1 = min(d$lon) - pad, lat1 = min(d$lat) - pad,
+          lng2 = max(d$lon) + pad, lat2 = max(d$lat) + pad
+        )
+      } else {
+        mapa_base |> setView(lng = -74.0817, lat = 4.7110, zoom = 11)
+      }
 
       if (nrow(d) > 0) {
         mapa <- mapa |>
