@@ -60,15 +60,18 @@ source("etl_limpieza.R")
 <!-- AUTO-MANAGED: patterns -->
 ## Detected Patterns
 
-- **Reusable UI box helpers**: `box_top(id, titulo, slider_id, ...)` for top-N slider + chart; `cbox(id, titulo, descripcion, ...)` for standard chart boxes
+- **Reusable UI box helpers**: `box_top(id, titulo, slider_id, ...)` for top-N slider + chart; `cbox(id, titulo, descripcion, ...)` for standard chart boxes — both defined inside `run_dashboard()` scope
+- **Base ggplot theme**: `tema()` function defined inside `run_dashboard()` scope — minimal theme, white background, suppressed minor grid, styled subtitle/caption
 - **Global sidebar filters**: year mode (Interactivo vs General), severity toggle (soloSevero), locality selector — applied across all 18 charts
 - **Color palettes**: `PAL_GRAV` (Solo Daños / Con Heridos / Con Muertos), `PAL_SEXO` (MASCULINO / FEMENINO / No Identificado) defined in `run_dashboard()` scope
 - **Coordinate validation**: Bogotá bounding box lat [3.5, 5.5], lon [-75.0, -73.0] applied after parsing
 - **Age grouping**: `cut()` with `EDAD_BREAKS` / `EDAD_LABELS` from config.R — 6 groups from 0 to 120+
+- **Severo derivation**: `ifelse(Gravedad %in% c("Con Heridos", "Con Muertos"), "Severo", "No Severo")` applied in `load_dashboard_data()`
 <!-- END AUTO-MANAGED -->
 
 <!-- AUTO-MANAGED: git-insights -->
 ## Git Insights
 
 - `9fd5774` — Implementacion de dashboard interactivo: added full 8-tab Shiny dashboard with 18 interactive charts and Leaflet map
+- `dce3d25` — chore: Text more size: minor text sizing adjustment in dashboard UI
 <!-- END AUTO-MANAGED -->

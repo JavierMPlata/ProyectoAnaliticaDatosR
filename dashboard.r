@@ -112,7 +112,7 @@ run_dashboard <- function(launch_browser = TRUE) {
         ),
         column(9,
           p(descripcion,
-            style = "font-style:italic; color:#555; font-size:11px;
+            style = "font-style:italic; color:#555; font-size:14px;
                      margin-top:12px; line-height:1.5;")
         )
       ),
@@ -126,7 +126,7 @@ run_dashboard <- function(launch_browser = TRUE) {
     box(
       width = w, title = titulo, status = status, solidHeader = TRUE,
       p(descripcion,
-        style = "font-style:italic; color:#555; font-size:11px;
+        style = "font-style:italic; color:#555; font-size:14px;
                  margin-bottom:6px; line-height:1.5;"),
       plotlyOutput(id, height = h)
     )
@@ -305,11 +305,11 @@ run_dashboard <- function(launch_browser = TRUE) {
           ),
           fluidRow(
             cbox("p12b_edad_box",
-                 "12b · Distribuci\u00f3n Detallada de Edad por Grupo Etario (Boxplot)",
-                 "Cada caja muestra: l\u00ednea central = mediana (edad t\u00edpica),
-                  borde inferior/superior = Q1/Q3 (rango del 50\u0025 de los datos),
-                  bigotes = valores m\u00e1ximos/m\u00ednimos normales, puntos = valores
-                  at\u00edpicos. El rombo es la media (promedio).",
+                 "12b \u00b7 Edad seg\u00fan Gravedad de la Lesi\u00f3n (Boxplot)",
+                 "\u00bfLas personas que fallecen o resultan heridas tienen edades distintas
+                  a las ilesas? Cada caja muestra la distribuci\u00f3n de edades para un
+                  nivel de gravedad: mediana (l\u00ednea), rango 50\u0025 central (caja),
+                  promedio (rombo) y edades at\u00edpicas (puntos).",
                  status = "info", h = "420px", w = 12)
           )
         ),
@@ -830,38 +830,64 @@ run_dashboard <- function(launch_browser = TRUE) {
     # ── 12b · Boxplot edad ────────────────────────────────────────────────────
 
     output$p12b_edad_box <- renderPlotly({
+      orden_grav_act <- c("ILESO", "HERIDO", "MUERTO")
+      etiq_grav_act  <- c(ILESO  = "Sin lesiones (Ileso)",
+                           HERIDO = "Con lesiones (Herido)",
+                           MUERTO = "Fallecido (Muerto)")
+      cols_grav_act  <- c(ILESO  = "#2196a6",
+                           HERIDO = "#e07b00",
+                           MUERTO = "#c0392b")
+
       df_box <- d_act() |>
-        filter(!is.na(Edad_num), !is.na(Grupo_Edad),
-               Edad_num >= 0, Edad_num <= 110)
-      cols_e <- c("#1a6faf","#2196a6","#2e8b57","#e07b00","#c0392b","#8b0000")
-      grupos <- levels(droplevels(df_box$Grupo_Edad))
+        filter(!is.na(Edad_num), Edad_num >= 0, Edad_num <= 110,
+               Gravedad_Indicador_Tradicional %in% orden_grav_act)
+
+      resumen <- df_box |>
+        group_by(Gravedad_Indicador_Tradicional) |>
+        summarise(
+          Med   = median(Edad_num),
+          Media = round(mean(Edad_num), 1),
+          Q1    = quantile(Edad_num, .25),
+          Q3    = quantile(Edad_num, .75),
+          N     = n(),
+          .groups = "drop"
+        )
 
       p <- plot_ly()
-      for (i in seq_along(grupos)) {
-        g <- grupos[i]; col <- cols_e[i]
-        vals <- df_box$Edad_num[as.character(df_box$Grupo_Edad) == g]
+      for (g in orden_grav_act) {
+        col  <- cols_grav_act[g]
+        etiq <- etiq_grav_act[g]
+        vals <- df_box$Edad_num[df_box$Gravedad_Indicador_Tradicional == g]
+        inf  <- resumen[resumen$Gravedad_Indicador_Tradicional == g, ]
+
+        ht <- if (nrow(inf) > 0)
+          paste0("<b>", etiq, "</b><br>",
+                 "Edad t\u00edpica (mediana): <b>", inf$Med, " a\u00f1os</b><br>",
+                 "Promedio: ", inf$Media, " a\u00f1os<br>",
+                 "50\u0025 central: ", inf$Q1, "\u2013", inf$Q3, " a\u00f1os<br>",
+                 "Personas: ", comma(inf$N),
+                 "<extra></extra>")
+        else "<extra></extra>"
+
         p <- add_trace(p,
-          type = "box", y = vals, name = g,
+          type = "box", y = vals, name = etiq,
           boxpoints = "suspectedoutliers", jitter = 0.35,
-          marker    = list(color = col, size = 4, opacity = 0.5),
+          marker    = list(color = col, size = 4, opacity = 0.45),
           line      = list(color = col, width = 2),
           fillcolor = paste0(col, "33"),
           boxmean   = TRUE,
-          hovertemplate = paste0(
-            "<b>", g, "</b><br>",
-            "Mediana (edad t\u00edpica): %{median} a\u00f1os<br>",
-            "Rango central (Q1\u2013Q3): %{q1}\u2013%{q3} a\u00f1os<br>",
-            "M\u00ednimo normal: %{lowerfence} a\u00f1os<br>",
-            "M\u00e1ximo normal: %{upperfence} a\u00f1os<extra></extra>")
+          hoverinfo = "none",
+          hovertemplate = ht
         )
       }
       p |> layout(
-        xaxis = list(title = "Grupo de edad de la persona involucrada"),
-        yaxis = list(title = "Edad exacta de la persona (a\u00f1os)",
+        xaxis = list(title = "Gravedad de la lesi\u00f3n de la persona",
+                     tickfont = list(size = 13)),
+        yaxis = list(title = "Edad de la persona (a\u00f1os)",
                      gridcolor = "#eeeeee", zeroline = FALSE),
         showlegend = FALSE, boxmode = "group",
         annotations = list(list(
-          text = "Rombo = promedio | L\u00ednea = mediana | Caja = 50\u0025 central de los datos | Puntos = valores at\u00edpicos",
+          text = "Rombo = promedio \u00b7 L\u00ednea = mediana \u00b7 Caja = 50\u0025 central de edades \u00b7 Puntos = edades extremas",
           showarrow = FALSE, x = 0.5, y = -0.13, xref = "paper", yref = "paper",
           font = list(size = 10, color = "#888888")
         )),
