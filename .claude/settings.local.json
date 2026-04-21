@@ -1,4 +1,14 @@
 {
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/migue/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/3b1c86d9-b8fa-4dbb-8291-c3bc5d0ae99d/3517346b-5119-4dcf-8fb7-01fcb5b5d919/skills/docx/**)",
+      "Bash(pandoc --track-changes=all \"C:\\\\Users\\\\migue\\\\OneDrive\\\\Documents\\\\DEVs\\\\R\\\\Informe_Analisis_R_Siniestralidad.docx\" -o output.md)",
+      "Bash(python scripts/office/unpack.py \"C:\\\\Users\\\\migue\\\\OneDrive\\\\Documents\\\\DEVs\\\\R\\\\Informe_Analisis_R_Siniestralidad.docx\" unpacked/)",
+      "Bash(pip install *)",
+      "Bash(python scripts/office/pack.py unpacked/ \"C:\\\\Users\\\\migue\\\\OneDrive\\\\Documents\\\\DEVs\\\\R\\\\Informe_Analisis_R_Siniestralidad.docx\" --original \"C:\\\\Users\\\\migue\\\\OneDrive\\\\Documents\\\\DEVs\\\\R\\\\Informe_Analisis_R_Siniestralidad.docx\")",
+      "Bash(python scripts/office/pack.py unpacked/ \"C:\\\\Users\\\\migue\\\\OneDrive\\\\Documents\\\\DEVs\\\\R\\\\Informe_Analisis_R_Siniestralidad.docx\" --original \"C:\\\\Users\\\\migue\\\\OneDrive\\\\Documents\\\\DEVs\\\\R\\\\Informe_Analisis_R_Siniestralidad.docx\" --validate false)"
+    ]
+  },
   "enabledMcpjsonServers": [
     "claude-flow"
   ],

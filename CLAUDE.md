@@ -67,6 +67,7 @@ source("etl_limpieza.R")
 - **Coordinate validation**: Bogotá bounding box lat [4.44, 4.84], lon [-74.26, -73.98] applied after parsing
 - **Age grouping**: `cut()` with `EDAD_BREAKS` / `EDAD_LABELS` from config.R — 6 groups from 0 to 120+
 - **Severo derivation**: `ifelse(Gravedad %in% c("Con Heridos", "Con Muertos"), "Severo", "No Severo")` applied in `load_dashboard_data()`
+- **Locality auto-zoom**: Leaflet map uses `fitBounds()` with 0.015 padding when a specific locality is selected; falls back to `setView(lng=-74.0817, lat=4.7110, zoom=11)` for "Todas"
 <!-- END AUTO-MANAGED -->
 
 <!-- AUTO-MANAGED: git-insights -->
