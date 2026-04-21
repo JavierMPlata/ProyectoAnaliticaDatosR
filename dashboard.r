@@ -112,7 +112,7 @@ run_dashboard <- function(launch_browser = TRUE) {
         ),
         column(9,
           p(descripcion,
-            style = "font-style:italic; color:#555; font-size:0.88em;
+            style = "font-style:italic; color:#555; font-size:11px;
                      margin-top:12px; line-height:1.5;")
         )
       ),
@@ -126,7 +126,7 @@ run_dashboard <- function(launch_browser = TRUE) {
     box(
       width = w, title = titulo, status = status, solidHeader = TRUE,
       p(descripcion,
-        style = "font-style:italic; color:#555; font-size:0.88em;
+        style = "font-style:italic; color:#555; font-size:11px;
                  margin-bottom:6px; line-height:1.5;"),
       plotlyOutput(id, height = h)
     )
@@ -269,7 +269,7 @@ run_dashboard <- function(launch_browser = TRUE) {
                    del mapa. Los c\u00edrculos agrupan accidentes cercanos (el n\u00famero indica
                    cu\u00e1ntos hay). Haz clic en un grupo para acercar y ver los puntos
                    individuales. El mapa de calor muestra densidad: rojo = zona cr\u00edtica.",
-                  style = "font-style:italic; color:#555; font-size:0.88em;
+                  style = "font-style:italic; color:#555; font-size:11px;
                            margin-bottom:8px; line-height:1.5;"),
                 leafletOutput("mapa_pro", height = "560px"))
           ),
@@ -385,19 +385,19 @@ run_dashboard <- function(launch_browser = TRUE) {
                 status = "primary", solidHeader = TRUE,
                 p("Relaci\u00f3n entre hora del accidente, mes, a\u00f1o y otras variables
                    num\u00e9ricas del registro de siniestros.",
-                  style = "font-style:italic; color:#555; font-size:0.88em;"),
+                  style = "font-style:italic; color:#555; font-size:11px;"),
                 plotlyOutput("p_corr_sin", height = "380px")),
             box(width = 4, title = "Actor Vial — Variables num\u00e9ricas",
                 status = "primary", solidHeader = TRUE,
                 p("Relaci\u00f3n entre la edad del actor vial, el a\u00f1o del siniestro
                    y otras variables num\u00e9ricas del registro de personas involucradas.",
-                  style = "font-style:italic; color:#555; font-size:0.88em;"),
+                  style = "font-style:italic; color:#555; font-size:11px;"),
                 plotlyOutput("p_corr_act", height = "380px")),
             box(width = 4, title = "Veh\u00edculos — Variables num\u00e9ricas",
                 status = "primary", solidHeader = TRUE,
                 p("Relaci\u00f3n entre las variables num\u00e9ricas del registro de veh\u00edculos
                    involucrados en siniestros viales.",
-                  style = "font-style:italic; color:#555; font-size:0.88em;"),
+                  style = "font-style:italic; color:#555; font-size:11px;"),
                 plotlyOutput("p_corr_veh", height = "380px"))
           )
         ),

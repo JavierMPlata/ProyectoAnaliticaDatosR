@@ -1,0 +1,8 @@
+{
+  "enabledMcpjsonServers": [
+    "claude-flow"
+  ],
+  "disabledMcpjsonServers": [
+    "n8n-mcp"
+  ]
+}
