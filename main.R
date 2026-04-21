@@ -17,17 +17,18 @@
 
 # ── Verificar paquetes e instalar si faltan ────────────────────────────────────
 paquetes_necesarios <- c(
-  "readxl",    # Lectura de Excel
-  "writexl",   # Escritura de Excel
-  "dplyr",     # Manipulación de datos
-  "tidyr",     # Pivoteo y reshape
-  "ggplot2",   # Visualizaciones
-  "scales",    # Formato de ejes
-  "corrplot",  # Gráfico de correlaciones
-  "shiny",     # Dashboard interactivo
-  "plotly",    # Gráficos interactivos
-  "leaflet",   # Mapa base
-  "leaflet.extras" # Heatmap geográfico
+  "readxl",        # Lectura de Excel
+  "writexl",       # Escritura de Excel
+  "dplyr",         # Manipulación de datos
+  "tidyr",         # Pivoteo y reshape
+  "ggplot2",       # Visualizaciones
+  "scales",        # Formato de ejes
+  "corrplot",      # Gráfico de correlaciones
+  "shiny",            # Dashboard interactivo
+  "shinydashboard",   # Layout tipo dashboard profesional
+  "plotly",           # Gráficos interactivos
+  "leaflet",          # Mapa base
+  "leaflet.extras"  # Heatmap geográfico
 )
 
 paquetes_faltantes <- paquetes_necesarios[
@@ -44,6 +45,7 @@ source("config.R")
 source("etl_limpieza.R")
 source("analisis_exploratorio.R")
 source("visualizaciones.R")
+source("dashboard.R")
 
 # =============================================================================
 # PIPELINE COMPLETO
@@ -76,3 +78,8 @@ message(strrep("#", 65))
 message("  Archivos limpios → ", CLEANED_DIR)
 message("  Gráficos         → ", CHARTS_DIR)
 message(strrep("#", 65), "\n")
+
+# ── FASE 4: DASHBOARD INTERACTIVO ─────────────────────────────────────────────
+message(">> PASO 4: LANZANDO DASHBOARD INTERACTIVO")
+message("   (Cierra la ventana del navegador o presiona Ctrl+C para detener)")
+run_dashboard()
