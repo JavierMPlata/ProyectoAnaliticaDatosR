@@ -29,6 +29,8 @@ load_dashboard_data <- function() {
 
   df_sin$Severo      <- ifelse(df_sin$Gravedad_Indicador_Tradicional %in%
                                  c("Con Heridos", "Con Muertos"), "Severo", "No Severo")
+  if ("Direccion" %in% names(df_sin))
+    df_sin$Direccion <- trimws(as.character(df_sin$Direccion))
   df_sin$Numero_Mes  <- match(df_sin$MM_Acc, MESES_ES)
   df_sin$MM_Acc      <- factor(df_sin$MM_Acc, levels = MESES_ES, ordered = TRUE)
   df_sin$Dia_Semana_Acc <- factor(df_sin$Dia_Semana_Acc,
@@ -282,6 +284,16 @@ run_dashboard <- function(launch_browser = TRUE) {
                      comparar cu\u00e1les concentran el mayor riesgo vial.",
                     min_v = 3, max_v = length(localidades), def = 10,
                     status = "primary", h = "420px", w = 12)
+          ),
+          fluidRow(
+            box_top("p15_calles",
+                    "15 · Top de Calles M\u00e1s Peligrosas",
+                    "top_calles", "N\u00famero de calles a mostrar:",
+                    "Ranking de direcciones con mayor n\u00famero de siniestros registrados.
+                     Permite identificar los puntos de v\u00eda donde se concentra m\u00e1s riesgo
+                     y priorizar intervenciones de seguridad vial.",
+                    min_v = 3, max_v = 30, def = 10,
+                    status = "danger", h = "420px", w = 12)
           )
         ),
 
@@ -679,6 +691,34 @@ run_dashboard <- function(launch_browser = TRUE) {
         labs(x = "Total de accidentes en esa localidad",
              y = "Localidad de Bogot\u00e1",
              caption = "Color m\u00e1s oscuro = mayor concentraci\u00f3n de accidentes") +
+        tema()
+      ggplotly(p, tooltip = "text") |>
+        layout(plot_bgcolor = "white", paper_bgcolor = "white")
+    })
+
+    # ── 15 · Top calles (top-N) ───────────────────────────────────────────────
+
+    output$p15_calles <- renderPlotly({
+      top_n <- input$top_calles
+      top <- d_sin() |>
+        filter(!is.na(Direccion), Direccion != "") |>
+        count(Direccion, name = "N") |>
+        slice_max(N, n = top_n) |>
+        # Orden ascendente para lectura vertical natural en barras horizontales
+        arrange(N) |>
+        mutate(Direccion = factor(Direccion, levels = Direccion),
+               pct       = N / sum(N))
+
+      p <- ggplot(top, aes(N, Direccion, fill = N,
+          text = paste0("<b>", Direccion, "</b><br>",
+                        comma(N), " siniestros<br>",
+                        percent(pct, .1), " del grupo mostrado"))) +
+        geom_col(color = "white", show.legend = FALSE) +
+        scale_fill_gradient(low = "#f5b7b1", high = "#922b21") +
+        scale_x_continuous(labels = comma, expand = expansion(mult = c(0,.20))) +
+        labs(x = "Total de siniestros en esa direcci\u00f3n",
+             y = "Direcci\u00f3n reportada",
+             caption = "Color m\u00e1s oscuro = mayor concentraci\u00f3n de siniestros") +
         tema()
       ggplotly(p, tooltip = "text") |>
         layout(plot_bgcolor = "white", paper_bgcolor = "white")
