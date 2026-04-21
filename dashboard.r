@@ -29,6 +29,8 @@ load_dashboard_data <- function() {
 
   df_sin$Severo      <- ifelse(df_sin$Gravedad_Indicador_Tradicional %in%
                                  c("Con Heridos", "Con Muertos"), "Severo", "No Severo")
+  if ("Direccion" %in% names(df_sin))
+    df_sin$Direccion <- trimws(as.character(df_sin$Direccion))
   df_sin$Numero_Mes  <- match(df_sin$MM_Acc, MESES_ES)
   df_sin$MM_Acc      <- factor(df_sin$MM_Acc, levels = MESES_ES, ordered = TRUE)
   df_sin$Dia_Semana_Acc <- factor(df_sin$Dia_Semana_Acc,
@@ -699,10 +701,10 @@ run_dashboard <- function(launch_browser = TRUE) {
     output$p15_calles <- renderPlotly({
       top_n <- input$top_calles
       top <- d_sin() |>
-        mutate(Direccion = trimws(as.character(Direccion))) |>
         filter(!is.na(Direccion), Direccion != "") |>
         count(Direccion, name = "N") |>
         slice_max(N, n = top_n) |>
+        # Orden ascendente para lectura vertical natural en barras horizontales
         arrange(N) |>
         mutate(Direccion = factor(Direccion, levels = Direccion),
                pct       = N / sum(N))
